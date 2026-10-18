@@ -1,0 +1,65 @@
+{
+  "skill_name": "appsheet",
+  "evals": [
+    {
+      "id": 1,
+      "name": "pdf-cache-y-ruta",
+      "prompt": "Tengo un bot en AppSheet que genera el PDF de una inspección cuando cambio [Estado] a \"Cerrada\". La tarea Create a new file guarda en la carpeta \"Reportes\" con File Name Prefix Reporte_<<[ID]>>_<<TEXT(NOW(),\"YYYYMMDDHHMMSS\")>>. Después una acción Data: set the values pone en la columna File [PDF] la fórmula \"Reportes/Reporte_\" & [ID] & \"_\" & TEXT(NOW(),\"YYYYMMDDHHMMSS\") & \".pdf\". Puse lo de NOW() porque antes al regenerar se veía el PDF viejo. Ahora casi siempre que abro el PDF desde la app sale pantalla negra o 'file not found'. ¿Qué está mal y cómo lo arreglo paso a paso?",
+      "expected_output": "Identifica que NOW() se evalúa en dos momentos distintos (bot y acción) y los nombres no coinciden; propone calcular el nombre una vez en una columna y usarla en ambos sitios; Disable timestamp; rutas relativas.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "list-vs-text-y-pin",
+      "prompt": "en appsheet tengo una tabla Usuarios (Email, Rol, PIN) y en el Show_If de una vista puse SELECT(Usuarios[Rol], [Email] = USEREMAIL()) = \"Admin\" y me sale Cannot compare List with Text. Lei en un foro que se arregla con TOP(SELECT(...),1). Ademas la columna PIN es Number y cuando alguien pone 0123 queda 123 y no deja letras. que hago con las dos cosas?",
+      "expected_output": "Explica que SELECT devuelve lista; corrige que TOP también devuelve lista; propone ANY/INDEX/LOOKUP o IN; PIN como Text en AppSheet y formato texto en la hoja; Valid_If de longitud; recuperar ceros perdidos.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "normalizar-beneficiarios",
+      "prompt": "Tengo esta base de beneficiarios exportada a CSV (datos_beneficiarios.csv) que voy a usar en una app de AppSheet, y los catálogos DIVIPOLA recortados (cat_departamentos.csv, cat_municipios.csv). Está muy sucia: nombres en mayúsculas y minúsculas mezcladas, valores con puntos de miles, hectáreas con coma decimal, departamentos y municipios mal escritos. Normalízala como base de datos para AppSheet: genera datos_normalizados.csv (con columnas de código DANE para departamento y municipio) y un reporte_normalizacion.md con qué cambiaste y qué debo revisar yo a mano.",
+      "expected_output": "CSV normalizado con nombres propios correctos, números puros (1.053 -> 1053, 3,5 -> 3.5), documentos como texto con ceros, Rionegro resuelto según departamento, Medelin marcado para revisión, códigos DANE con ceros, reporte con pendientes.",
+      "files": [
+        "datos_beneficiarios.csv",
+        "cat_departamentos.csv",
+        "cat_municipios.csv"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "bot-repetido-webhook-appsscript",
+      "prompt": "Tengo un bot en appsheet: evento Updates en la tabla Solicitudes, condición [Estado] = \"Aprobado\", que envía un email al solicitante y llama un webhook a mi Apps Script (doPost publicado como aplicación web, URL que termina en /exec). Problemas: 1) el email le llega al usuario cada vez que alguien edita cualquier cosa de la solicitud ya aprobada. 2) cuando las observaciones tienen comillas o saltos de línea, el doPost falla con SyntaxError: Unexpected token in JSON. El body es {\"id\":\"<<[ID]>>\",\"obs\":\"<<[Observaciones]>>\"}. 3) arreglé el script y le di guardar pero sigue fallando exactamente igual. Ayúdame con los tres.",
+      "expected_output": "Condición de transición con _THISROW_BEFORE/_AFTER; JSON: enviar solo ID o sanear con SUBSTITUTE, logging de postData.contents, sin inventar funciones de escape; Apps Script: Gestionar implementaciones > Nueva versión.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "name": "en-list-vs-text-and-pin",
+      "language": "en",
+      "prompt": "In AppSheet I have a Users table (Email, Role, PIN). In a view's Show_If I put SELECT(Users[Role], [Email] = USEREMAIL()) = \"Admin\" and I get \"Cannot compare List with Text\". Someone on a forum said to wrap it in TOP(SELECT(...),1). Also the PIN column is a Number, so when someone types 0123 it becomes 123 and letters aren't allowed. How do I fix both?",
+      "expected_output": "Answers in English; SELECT returns a list; TOP still returns a list; LOOKUP/ANY/INDEX/IN; PIN as Text + plain text format; Valid_If.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "name": "en-normalize-us-customers",
+      "language": "en",
+      "prompt": "I exported our customer list to customers.csv and I want to build an AppSheet app on it, but the data is a mess: names in random caps, amounts with dollar signs and commas, ZIP codes that lost their leading zero, states written as CA / California / ca, counties misspelled. I also have states.csv and counties.csv with FIPS codes. Clean it up as a proper database for AppSheet: give me normalized_data.csv (with FIPS code columns for state and county) and a normalization_report.md saying what you changed and what I need to check by hand.",
+      "expected_output": "English outputs; McDonald/O'Brien Jr.; amounts as plain numbers; ZIP 02134/09021; FIPS codes with zeros; san deigo flagged; Kings not in CA flagged; invalid 02/30 flagged; duplicate A-002 flagged.",
+      "files": [
+        "customers.csv",
+        "states.csv",
+        "counties.csv"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "en-bot-webhook-appsscript",
+      "language": "en",
+      "prompt": "I have an AppSheet bot: Updates event on the Requests table, condition [Status] = \"Approved\", which emails the requester and calls a webhook to my Apps Script (doPost deployed as a web app, URL ending in /exec). Problems: 1) the requester gets the email again every time anyone edits anything on an already-approved request. 2) when the notes contain quotes or line breaks, doPost fails with SyntaxError: Unexpected token in JSON. The body is {\"id\":\"<<[ID]>>\",\"notes\":\"<<[Notes]>>\"}. 3) I fixed the script and saved it, but it still fails exactly the same way. Help me with all three.",
+      "expected_output": "Answers in English; transition condition; ENCODEURL/only ID/Call a script; no invented :json; Manage deployments > New version; log postData.contents.",
+      "files": []
+    }
+  ]
+}
